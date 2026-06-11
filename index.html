@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Cup Boxes — Mexico vs South Africa</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f5f5;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 2rem;
+      max-width: 520px;
+      width: 100%;
+    }
+
+    .match-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .match-header h1 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .match-header p {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .outcomes {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 2rem;
+    }
+
+    .outcome {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .outcome-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      width: 120px;
+      flex-shrink: 0;
+    }
+
+    .bar-wrap {
+      flex: 1;
+      background: #eee;
+      border-radius: 999px;
+      height: 12px;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.8s ease;
+    }
+
+    .bar.home  { background: #16a34a; }
+    .bar.draw  { background: #d97706; }
+    .bar.away  { background: #dc2626; }
+
+    .outcome-stats {
+      display: flex;
+      gap: 10px;
+      font-size: 0.85rem;
+      min-width: 100px;
+      justify-content: flex-end;
+    }
+
+    .pct  { color: #555; }
+    .dollars { font-weight: 600; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #eee;
+      margin-bottom: 1.25rem;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #555;
+    }
+
+    .status {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 1.5rem;
+    }
+
+    .error { color: #dc2626; }
+
+    .refresh-btn {
+      display: block;
+      margin: 1.5rem auto 0;
+      padding: 8px 20px;
+      font-size: 0.85rem;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .refresh-btn:hover { background: #333; }
+
+    .skeleton {
+      background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 4px;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="match-header">
+      <h1>Mexico vs South Africa</h1>
+      <p id="match-time">Loading...</p>
+    </div>
+
+    <div class="outcomes" id="outcomes">
+      <div class="outcome">
+        <div class="outcome-label skeleton" style="height:14px; width:90px;">&nbsp;</div>
+        <div class="bar-wrap"><div class="bar skeleton" style="width:100%;"></div></div>
+        <div class="outcome-stats skeleton" style="height:14px; width:80px;">&nbsp;</div>
+      </div>
+      <div class="outcome">
+        <div class="outcome-label skeleton" style="height:14px; width:50px;">&nbsp;</div>
+        <div class="bar-wrap"><div class="bar skeleton" style="width:100%;"></div></div>
+        <div class="outcome-stats skeleton" style="height:14px; width:80px;">&nbsp;</div>
+      </div>
+      <div class="outcome">
+        <div class="outcome-label skeleton" style="height:14px; width:110px;">&nbsp;</div>
+        <div class="bar-wrap"><div class="bar skeleton" style="width:100%;"></div></div>
+        <div class="outcome-stats skeleton" style="height:14px; width:80px;">&nbsp;</div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+    <div class="total-row">
+      <span>Total</span>
+      <span>100% &nbsp;|&nbsp; $100</span>
+    </div>
+
+    <p class="status" id="status"></p>
+    <button class="refresh-btn" onclick="load()">Refresh odds</button>
+  </div>
+
+  <script>
+    const API_KEY = "9d2f7dbad04e89a62bf9fa5973d0a991";
+    const SPORT   = "soccer_fifa_world_cup";
+
+    async function fetchOdds() {
+      const url = `https://api.the-odds-api.com/v4/sports/${SPORT}/odds?apiKey=${API_KEY}&regions=us&markets=h2h&oddsFormat=decimal`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`API error ${res.status}`);
+      return res.json();
+    }
+
+    function findGame(games) {
+      return games.find(g => {
+        const h = g.home_team.toLowerCase(), a = g.away_team.toLowerCase();
+        return (h.includes("mexico") || a.includes("mexico")) &&
+               (h.includes("south africa") || a.includes("south africa"));
+      });
+    }
+
+    function getProbs(game) {
+      const sums = {}, counts = {};
+      for (const bk of game.bookmakers) {
+        for (const mkt of bk.markets) {
+          if (mkt.key !== "h2h") continue;
+          for (const o of mkt.outcomes) {
+            sums[o.name]   = (sums[o.name]   || 0) + 1 / o.price;
+            counts[o.name] = (counts[o.name] || 0) + 1;
+          }
+        }
+      }
+      const raw = {};
+      for (const name in sums) raw[name] = sums[name] / counts[name];
+      const total = Object.values(raw).reduce((a, b) => a + b, 0);
+      const norm = {};
+      for (const name in raw) norm[name] = raw[name] / total;
+      return norm;
+    }
+
+    function assignDollars(norm) {
+      const dollars = {};
+      for (const name in norm) dollars[name] = Math.round(norm[name] * 100);
+      const diff = 100 - Object.values(dollars).reduce((a, b) => a + b, 0);
+      if (diff !== 0) {
+        const largest = Object.keys(norm).reduce((a, b) => norm[a] > norm[b] ? a : b);
+        dollars[largest] += diff;
+      }
+      return dollars;
+    }
+
+    function barClass(name, homeTeam) {
+      if (name === homeTeam) return "home";
+      if (name === "Draw")   return "draw";
+      return "away";
+    }
+
+    function formatTime(iso) {
+      return new Date(iso).toLocaleString(undefined, {
+        weekday: "short", month: "short", day: "numeric",
+        hour: "numeric", minute: "2-digit", timeZoneName: "short"
+      });
+    }
+
+    async function load() {
+      document.getElementById("status").textContent = "Fetching latest odds...";
+      try {
+        const games  = await fetchOdds();
+        const game   = findGame(games);
+        if (!game) throw new Error("Game not found — it may not be listed yet.");
+
+        const norm    = getProbs(game);
+        const dollars = assignDollars(norm);
+
+        document.getElementById("match-time").textContent = formatTime(game.commence_time);
+
+        const order = [game.home_team, "Draw", game.away_team];
+        const html  = order.map(name => {
+          const pct = (norm[name] * 100).toFixed(1);
+          const cls = barClass(name, game.home_team);
+          return `
+            <div class="outcome">
+              <span class="outcome-label">${name}</span>
+              <div class="bar-wrap">
+                <div class="bar ${cls}" style="width:0%" data-pct="${pct}"></div>
+              </div>
+              <div class="outcome-stats">
+                <span class="pct">${pct}%</span>
+                <span class="dollars">$${dollars[name]}</span>
+              </div>
+            </div>`;
+        }).join("");
+
+        document.getElementById("outcomes").innerHTML = html;
+        document.getElementById("status").textContent =
+          `Last updated: ${new Date().toLocaleTimeString()}`;
+
+        requestAnimationFrame(() => {
+          document.querySelectorAll(".bar[data-pct]").forEach(el => {
+            el.style.width = el.dataset.pct + "%";
+          });
+        });
+
+      } catch (err) {
+        document.getElementById("status").innerHTML =
+          `<span class="error">${err.message}</span>`;
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

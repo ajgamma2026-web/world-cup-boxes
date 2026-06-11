@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>World Cup Boxes — Mexico vs South Africa</title>
+  <title>World Cup Boxes — Today's Matches</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,9 +13,18 @@
       color: #111;
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 2rem;
+      gap: 1.5rem;
+    }
+
+    h1.page-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #444;
+      letter-spacing: 0.01em;
     }
 
     .card {
@@ -29,11 +38,11 @@
 
     .match-header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.75rem;
     }
 
-    .match-header h1 {
-      font-size: 1.3rem;
+    .match-header h2 {
+      font-size: 1.2rem;
       font-weight: 600;
       margin-bottom: 4px;
     }
@@ -77,9 +86,9 @@
       transition: width 0.8s ease;
     }
 
-    .bar.home  { background: #16a34a; }
-    .bar.draw  { background: #d97706; }
-    .bar.away  { background: #dc2626; }
+    .bar.home { background: #16a34a; }
+    .bar.draw { background: #d97706; }
+    .bar.away { background: #dc2626; }
 
     .outcome-stats {
       display: flex;
@@ -89,7 +98,7 @@
       justify-content: flex-end;
     }
 
-    .pct  { color: #555; }
+    .pct     { color: #555; }
     .dollars { font-weight: 600; }
 
     .divider {
@@ -110,7 +119,7 @@
       text-align: center;
       font-size: 0.85rem;
       color: #888;
-      margin-top: 1.5rem;
+      margin-top: 0.5rem;
     }
 
     .error { color: #dc2626; }
@@ -143,39 +152,10 @@
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="match-header">
-      <h1>Mexico vs South Africa</h1>
-      <p id="match-time">Loading...</p>
-    </div>
-
-    <div class="outcomes" id="outcomes">
-      <div class="outcome">
-        <div class="outcome-label skeleton" style="height:14px; width:90px;">&nbsp;</div>
-        <div class="bar-wrap"><div class="bar skeleton" style="width:100%;"></div></div>
-        <div class="outcome-stats skeleton" style="height:14px; width:80px;">&nbsp;</div>
-      </div>
-      <div class="outcome">
-        <div class="outcome-label skeleton" style="height:14px; width:50px;">&nbsp;</div>
-        <div class="bar-wrap"><div class="bar skeleton" style="width:100%;"></div></div>
-        <div class="outcome-stats skeleton" style="height:14px; width:80px;">&nbsp;</div>
-      </div>
-      <div class="outcome">
-        <div class="outcome-label skeleton" style="height:14px; width:110px;">&nbsp;</div>
-        <div class="bar-wrap"><div class="bar skeleton" style="width:100%;"></div></div>
-        <div class="outcome-stats skeleton" style="height:14px; width:80px;">&nbsp;</div>
-      </div>
-    </div>
-
-    <hr class="divider" />
-    <div class="total-row">
-      <span>Total</span>
-      <span>100% &nbsp;|&nbsp; $100</span>
-    </div>
-
-    <p class="status" id="status"></p>
-    <button class="refresh-btn" onclick="load()">Refresh odds</button>
-  </div>
+  <h1 class="page-title">⚽ World Cup 2026 — Today's Matches</h1>
+  <div id="cards-container"></div>
+  <p class="status" id="status">Loading...</p>
+  <button class="refresh-btn" onclick="load()">Refresh odds</button>
 
   <script>
     const API_KEY = "9d2f7dbad04e89a62bf9fa5973d0a991";
@@ -188,11 +168,14 @@
       return res.json();
     }
 
-    function findGame(games) {
-      return games.find(g => {
-        const h = g.home_team.toLowerCase(), a = g.away_team.toLowerCase();
-        return (h.includes("mexico") || a.includes("mexico")) &&
-               (h.includes("south africa") || a.includes("south africa"));
+    function getTodaysGames(games) {
+      const localToday = new Date();
+      localToday.setHours(0, 0, 0, 0);
+      const localTomorrow = new Date(localToday);
+      localTomorrow.setDate(localTomorrow.getDate() + 1);
+      return games.filter(g => {
+        const t = new Date(g.commence_time);
+        return t >= localToday && t < localTomorrow;
       });
     }
 
@@ -239,36 +222,62 @@
       });
     }
 
+    function renderCard(game) {
+      const norm    = getProbs(game);
+      const dollars = assignDollars(norm);
+      const order   = [game.home_team, "Draw", game.away_team];
+
+      const outcomesHtml = order.map(name => {
+        const pct = (norm[name] * 100).toFixed(1);
+        const cls = barClass(name, game.home_team);
+        return `
+          <div class="outcome">
+            <span class="outcome-label">${name}</span>
+            <div class="bar-wrap">
+              <div class="bar ${cls}" style="width:0%" data-pct="${pct}"></div>
+            </div>
+            <div class="outcome-stats">
+              <span class="pct">${pct}%</span>
+              <span class="dollars">$${dollars[name]}</span>
+            </div>
+          </div>`;
+      }).join("");
+
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="match-header">
+          <h2>${game.home_team} vs ${game.away_team}</h2>
+          <p>${formatTime(game.commence_time)}</p>
+        </div>
+        <div class="outcomes">${outcomesHtml}</div>
+        <hr class="divider" />
+        <div class="total-row">
+          <span>Total</span>
+          <span>100% &nbsp;|&nbsp; $100</span>
+        </div>`;
+      return card;
+    }
+
     async function load() {
       document.getElementById("status").textContent = "Fetching latest odds...";
+      document.getElementById("cards-container").innerHTML = "";
       try {
-        const games  = await fetchOdds();
-        const game   = findGame(games);
-        if (!game) throw new Error("Game not found — it may not be listed yet.");
+        const games   = await fetchOdds();
+        const todays  = getTodaysGames(games);
 
-        const norm    = getProbs(game);
-        const dollars = assignDollars(norm);
+        if (todays.length === 0) {
+          document.getElementById("status").textContent = "No matches found for today.";
+          return;
+        }
 
-        document.getElementById("match-time").textContent = formatTime(game.commence_time);
+        const container = document.getElementById("cards-container");
+        container.style.cssText = "display:flex; flex-direction:column; gap:1.5rem; width:100%; max-width:520px;";
 
-        const order = [game.home_team, "Draw", game.away_team];
-        const html  = order.map(name => {
-          const pct = (norm[name] * 100).toFixed(1);
-          const cls = barClass(name, game.home_team);
-          return `
-            <div class="outcome">
-              <span class="outcome-label">${name}</span>
-              <div class="bar-wrap">
-                <div class="bar ${cls}" style="width:0%" data-pct="${pct}"></div>
-              </div>
-              <div class="outcome-stats">
-                <span class="pct">${pct}%</span>
-                <span class="dollars">$${dollars[name]}</span>
-              </div>
-            </div>`;
-        }).join("");
+        for (const game of todays) {
+          container.appendChild(renderCard(game));
+        }
 
-        document.getElementById("outcomes").innerHTML = html;
         document.getElementById("status").textContent =
           `Last updated: ${new Date().toLocaleTimeString()}`;
 

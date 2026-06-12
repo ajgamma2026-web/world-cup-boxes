@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>World Cup Boxes — Today's Matches</title>
+  <title>World Cup Boxes 2026</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -12,51 +12,99 @@
       background: #f5f5f5;
       color: #111;
       min-height: 100vh;
+      padding: 0 0 3rem;
+    }
+
+    /* ── header ── */
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 1rem 1.5rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      margin-bottom: 1rem;
+    }
+
+    /* ── date nav ── */
+    .date-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+
+    .date-nav::-webkit-scrollbar { display: none; }
+
+    .date-tab {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #666;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .date-tab:hover { color: #111; }
+
+    .date-tab.active {
+      color: #111;
+      border-bottom-color: #111;
+    }
+
+    /* ── main content ── */
+    main {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 2rem;
       gap: 1.5rem;
+      padding: 2rem 1.5rem 0;
     }
 
-    h1.page-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #444;
-      letter-spacing: 0.01em;
-    }
-
+    /* ── match card ── */
     .card {
       background: #fff;
       border-radius: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      padding: 1.75rem 2rem;
       max-width: 520px;
       width: 100%;
     }
 
     .match-header {
       text-align: center;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.5rem;
     }
 
     .match-header h2 {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 600;
       margin-bottom: 4px;
     }
 
     .match-header p {
-      font-size: 0.85rem;
-      color: #666;
+      font-size: 0.82rem;
+      color: #888;
     }
 
     .outcomes {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      margin-bottom: 2rem;
+      gap: 13px;
+      margin-bottom: 1.5rem;
     }
 
     .outcome {
@@ -66,7 +114,7 @@
     }
 
     .outcome-label {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 500;
       width: 120px;
       flex-shrink: 0;
@@ -76,7 +124,7 @@
       flex: 1;
       background: #eee;
       border-radius: 999px;
-      height: 12px;
+      height: 11px;
       overflow: hidden;
     }
 
@@ -93,42 +141,63 @@
     .outcome-stats {
       display: flex;
       gap: 10px;
-      font-size: 0.85rem;
-      min-width: 100px;
+      font-size: 0.83rem;
+      min-width: 95px;
       justify-content: flex-end;
     }
 
-    .pct     { color: #555; }
+    .pct     { color: #777; }
     .dollars { font-weight: 600; }
 
     .divider {
       border: none;
       border-top: 1px solid #eee;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
     }
 
     .total-row {
       display: flex;
       justify-content: space-between;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      color: #555;
+      color: #666;
     }
 
-    .status {
+    /* ── future badge ── */
+    .future-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #6366f1;
+      background: #eef2ff;
+      border-radius: 6px;
+      padding: 2px 8px;
+      margin-bottom: 6px;
+    }
+
+    /* ── no odds notice ── */
+    .no-odds {
+      font-size: 0.82rem;
+      color: #aaa;
       text-align: center;
-      font-size: 0.85rem;
-      color: #888;
-      margin-top: 0.5rem;
+      padding: 0.5rem 0 0.25rem;
+    }
+
+    /* ── footer status ── */
+    .footer {
+      text-align: center;
+      font-size: 0.82rem;
+      color: #aaa;
+      margin-top: 1.5rem;
     }
 
     .error { color: #dc2626; }
 
     .refresh-btn {
       display: block;
-      margin: 1.5rem auto 0;
-      padding: 8px 20px;
-      font-size: 0.85rem;
+      margin: 1rem auto 0;
+      padding: 7px 18px;
+      font-size: 0.82rem;
       background: #111;
       color: #fff;
       border: none;
@@ -137,99 +206,118 @@
     }
 
     .refresh-btn:hover { background: #333; }
-
-    .skeleton {
-      background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.2s infinite;
-      border-radius: 4px;
-    }
-
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
   </style>
 </head>
 <body>
-  <h1 class="page-title">⚽ World Cup 2026 — Today's Matches</h1>
-  <div id="cards-container"></div>
-  <p class="status" id="status">Loading...</p>
-  <button class="refresh-btn" onclick="load()">Refresh odds</button>
 
-  <script>
-    const API_KEY = "9d2f7dbad04e89a62bf9fa5973d0a991";
-    const SPORT   = "soccer_fifa_world_cup";
+<header>
+  <h1>⚽ World Cup 2026</h1>
+  <nav class="date-nav" id="date-nav"></nav>
+</header>
 
-    async function fetchOdds() {
-      const url = `https://api.the-odds-api.com/v4/sports/${SPORT}/odds?apiKey=${API_KEY}&regions=us&markets=h2h&oddsFormat=decimal`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`API error ${res.status}`);
-      return res.json();
-    }
+<main id="main">
+  <p class="footer" id="status">Loading...</p>
+</main>
 
-    function getTodaysGames(games) {
-      const localToday = new Date();
-      localToday.setHours(0, 0, 0, 0);
-      const localTomorrow = new Date(localToday);
-      localTomorrow.setDate(localTomorrow.getDate() + 1);
-      return games.filter(g => {
-        const t = new Date(g.commence_time);
-        return t >= localToday && t < localTomorrow;
-      });
-    }
+<script>
+  const API_KEY = "9d2f7dbad04e89a62bf9fa5973d0a991";
+  const SPORT   = "soccer_fifa_world_cup";
 
-    function getProbs(game) {
-      const sums = {}, counts = {};
-      for (const bk of game.bookmakers) {
-        for (const mkt of bk.markets) {
-          if (mkt.key !== "h2h") continue;
-          for (const o of mkt.outcomes) {
-            sums[o.name]   = (sums[o.name]   || 0) + 1 / o.price;
-            counts[o.name] = (counts[o.name] || 0) + 1;
-          }
+  let allGames   = [];
+  let gameDates  = [];   // sorted unique local date strings "YYYY-MM-DD"
+  let activeDate = null;
+
+  async function fetchOdds() {
+    const url = `https://api.the-odds-api.com/v4/sports/${SPORT}/odds?apiKey=${API_KEY}&regions=us&markets=h2h&oddsFormat=decimal`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    return res.json();
+  }
+
+  function localDateStr(iso) {
+    const d = new Date(iso);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  function todayStr() {
+    return localDateStr(new Date().toISOString());
+  }
+
+  function formatTabLabel(dateStr) {
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const diff  = Math.round((date - today) / 86400000);
+    const label = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    if (diff === 0) return `Today · ${label}`;
+    if (diff === 1) return `Tomorrow · ${label}`;
+    return label;
+  }
+
+  function formatKickoff(iso) {
+    return new Date(iso).toLocaleString(undefined, {
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
+    });
+  }
+
+  function getProbs(game) {
+    const sums = {}, counts = {};
+    for (const bk of game.bookmakers) {
+      for (const mkt of bk.markets) {
+        if (mkt.key !== 'h2h') continue;
+        for (const o of mkt.outcomes) {
+          sums[o.name]   = (sums[o.name]   || 0) + 1 / o.price;
+          counts[o.name] = (counts[o.name] || 0) + 1;
         }
       }
-      const raw = {};
-      for (const name in sums) raw[name] = sums[name] / counts[name];
-      const total = Object.values(raw).reduce((a, b) => a + b, 0);
-      const norm = {};
-      for (const name in raw) norm[name] = raw[name] / total;
-      return norm;
     }
+    const raw = {};
+    for (const n in sums) raw[n] = sums[n] / counts[n];
+    const total = Object.values(raw).reduce((a,b) => a+b, 0);
+    const norm  = {};
+    for (const n in raw) norm[n] = raw[n] / total;
+    return norm;
+  }
 
-    function assignDollars(norm) {
-      const dollars = {};
-      for (const name in norm) dollars[name] = Math.round(norm[name] * 100);
-      const diff = 100 - Object.values(dollars).reduce((a, b) => a + b, 0);
-      if (diff !== 0) {
-        const largest = Object.keys(norm).reduce((a, b) => norm[a] > norm[b] ? a : b);
-        dollars[largest] += diff;
-      }
-      return dollars;
+  function assignDollars(norm) {
+    const dollars = {};
+    for (const n in norm) dollars[n] = Math.round(norm[n] * 100);
+    const diff = 100 - Object.values(dollars).reduce((a,b) => a+b, 0);
+    if (diff !== 0) {
+      const largest = Object.keys(norm).reduce((a,b) => norm[a] > norm[b] ? a : b);
+      dollars[largest] += diff;
     }
+    return dollars;
+  }
 
-    function barClass(name, homeTeam) {
-      if (name === homeTeam) return "home";
-      if (name === "Draw")   return "draw";
-      return "away";
-    }
+  function isFuture(iso) {
+    return new Date(iso) > new Date();
+  }
 
-    function formatTime(iso) {
-      return new Date(iso).toLocaleString(undefined, {
-        weekday: "short", month: "short", day: "numeric",
-        hour: "numeric", minute: "2-digit", timeZoneName: "short"
-      });
-    }
+  function renderCard(game) {
+    const hasOdds = game.bookmakers && game.bookmakers.length > 0;
+    const future  = isFuture(game.commence_time);
 
-    function renderCard(game) {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    let innerHtml = `
+      <div class="match-header">
+        ${future ? `<div class="future-badge">Upcoming · ${formatKickoff(game.commence_time)}</div>` : ''}
+        <h2>${game.home_team} vs ${game.away_team}</h2>
+        ${!future ? `<p>${formatKickoff(game.commence_time)}</p>` : ''}
+      </div>`;
+
+    if (!hasOdds) {
+      innerHtml += `<p class="no-odds">Odds not yet available</p>`;
+    } else {
       const norm    = getProbs(game);
       const dollars = assignDollars(norm);
-      const order   = [game.home_team, "Draw", game.away_team];
+      const order   = [game.home_team, 'Draw', game.away_team];
 
       const outcomesHtml = order.map(name => {
         const pct = (norm[name] * 100).toFixed(1);
-        const cls = barClass(name, game.home_team);
+        const cls = name === game.home_team ? 'home' : name === 'Draw' ? 'draw' : 'away';
         return `
           <div class="outcome">
             <span class="outcome-label">${name}</span>
@@ -241,59 +329,94 @@
               <span class="dollars">$${dollars[name]}</span>
             </div>
           </div>`;
-      }).join("");
+      }).join('');
 
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <div class="match-header">
-          <h2>${game.home_team} vs ${game.away_team}</h2>
-          <p>${formatTime(game.commence_time)}</p>
-        </div>
+      innerHtml += `
         <div class="outcomes">${outcomesHtml}</div>
         <hr class="divider" />
-        <div class="total-row">
-          <span>Total</span>
-          <span>100% &nbsp;|&nbsp; $100</span>
-        </div>`;
-      return card;
+        <div class="total-row"><span>Total</span><span>100% &nbsp;|&nbsp; $100</span></div>`;
     }
 
-    async function load() {
-      document.getElementById("status").textContent = "Fetching latest odds...";
-      document.getElementById("cards-container").innerHTML = "";
-      try {
-        const games   = await fetchOdds();
-        const todays  = getTodaysGames(games);
+    card.innerHTML = innerHtml;
+    return card;
+  }
 
-        if (todays.length === 0) {
-          document.getElementById("status").textContent = "No matches found for today.";
-          return;
-        }
+  function renderDateNav() {
+    const nav = document.getElementById('date-nav');
+    nav.innerHTML = '';
+    gameDates.forEach(d => {
+      const btn = document.createElement('button');
+      btn.className = 'date-tab' + (d === activeDate ? ' active' : '');
+      btn.textContent = formatTabLabel(d);
+      btn.onclick = () => selectDate(d);
+      nav.appendChild(btn);
+    });
+  }
 
-        const container = document.getElementById("cards-container");
-        container.style.cssText = "display:flex; flex-direction:column; gap:1.5rem; width:100%; max-width:520px;";
+  function selectDate(dateStr) {
+    activeDate = dateStr;
+    renderDateNav();
 
-        for (const game of todays) {
-          container.appendChild(renderCard(game));
-        }
+    const main = document.getElementById('main');
+    main.innerHTML = '';
 
-        document.getElementById("status").textContent =
-          `Last updated: ${new Date().toLocaleTimeString()}`;
+    const games = allGames.filter(g => localDateStr(g.commence_time) === dateStr);
 
-        requestAnimationFrame(() => {
-          document.querySelectorAll(".bar[data-pct]").forEach(el => {
-            el.style.width = el.dataset.pct + "%";
-          });
-        });
-
-      } catch (err) {
-        document.getElementById("status").innerHTML =
-          `<span class="error">${err.message}</span>`;
-      }
+    if (games.length === 0) {
+      main.innerHTML = '<p class="footer">No matches on this date.</p>';
+      return;
     }
 
-    load();
-  </script>
+    games.forEach(g => main.appendChild(renderCard(g)));
+
+    main.innerHTML += `
+      <p class="footer" id="status">Last updated: ${new Date().toLocaleTimeString()}</p>
+      <button class="refresh-btn" onclick="reload()">Refresh odds</button>`;
+
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.bar[data-pct]').forEach(el => {
+        el.style.width = el.dataset.pct + '%';
+      });
+    });
+  }
+
+  async function reload() {
+    document.getElementById('main').innerHTML = '<p class="footer" id="status">Fetching latest odds...</p>';
+    try {
+      allGames = await fetchOdds();
+      buildDates();
+      selectDate(activeDate || todayStr());
+    } catch(err) {
+      document.getElementById('main').innerHTML =
+        `<p class="footer error">${err.message}</p>`;
+    }
+  }
+
+  function buildDates() {
+    const set = new Set(allGames.map(g => localDateStr(g.commence_time)));
+    gameDates = [...set].sort();
+  }
+
+  async function init() {
+    try {
+      allGames = await fetchOdds();
+      buildDates();
+      const today = todayStr();
+      activeDate = gameDates.includes(today) ? today : gameDates[0];
+      renderDateNav();
+      selectDate(activeDate);
+    } catch(err) {
+      document.getElementById('main').innerHTML =
+        `<p class="footer error">${err.message}</p>`;
+    }
+  }
+
+  function reload() {
+    document.getElementById('main').innerHTML = '<p class="footer">Fetching latest odds...</p>';
+    init();
+  }
+
+  init();
+</script>
 </body>
 </html>

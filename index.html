@@ -15,7 +15,6 @@
       padding: 0 0 3rem;
     }
 
-    /* ── header ── */
     header {
       background: #fff;
       border-bottom: 1px solid #e5e5e5;
@@ -30,7 +29,6 @@
       margin-bottom: 1rem;
     }
 
-    /* ── date nav ── */
     .date-nav {
       display: flex;
       align-items: center;
@@ -58,13 +56,8 @@
     }
 
     .date-tab:hover { color: #111; }
+    .date-tab.active { color: #111; border-bottom-color: #111; }
 
-    .date-tab.active {
-      color: #111;
-      border-bottom-color: #111;
-    }
-
-    /* ── main content ── */
     main {
       display: flex;
       flex-direction: column;
@@ -73,7 +66,6 @@
       padding: 2rem 1.5rem 0;
     }
 
-    /* ── match card ── */
     .card {
       background: #fff;
       border-radius: 16px;
@@ -81,6 +73,11 @@
       padding: 1.75rem 2rem;
       max-width: 520px;
       width: 100%;
+    }
+
+    /* live card gets a subtle green left border */
+    .card.live {
+      border-left: 3px solid #16a34a;
     }
 
     .match-header {
@@ -97,6 +94,75 @@
     .match-header p {
       font-size: 0.82rem;
       color: #888;
+    }
+
+    /* badge row above title */
+    .badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .future-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #6366f1;
+      background: #eef2ff;
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #fff;
+      background: #dc2626;
+      border-radius: 6px;
+      padding: 2px 8px;
+      letter-spacing: 0.04em;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .live-update-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #16a34a;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 6px;
+      padding: 2px 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .live-update-btn:hover { background: #dcfce7; }
+    .live-update-btn:disabled { opacity: 0.5; cursor: default; }
+
+    .odds-timestamp {
+      font-size: 0.72rem;
+      color: #aaa;
+      margin-top: 4px;
     }
 
     .outcomes {
@@ -175,19 +241,6 @@
       color: #666;
     }
 
-    /* ── future badge ── */
-    .future-badge {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: #6366f1;
-      background: #eef2ff;
-      border-radius: 6px;
-      padding: 2px 8px;
-      margin-bottom: 6px;
-    }
-
-    /* ── no odds notice ── */
     .no-odds {
       font-size: 0.82rem;
       color: #aaa;
@@ -195,7 +248,6 @@
       padding: 0.5rem 0 0.25rem;
     }
 
-    /* ── footer status ── */
     .footer {
       text-align: center;
       font-size: 0.82rem;
@@ -228,15 +280,15 @@
 </header>
 
 <main id="main">
-  <p class="footer" id="status">Loading...</p>
+  <p class="footer">Loading...</p>
 </main>
 
 <script>
   const API_KEY = "9d2f7dbad04e89a62bf9fa5973d0a991";
   const SPORT   = "soccer_fifa_world_cup";
 
-  let allGames   = [];
-  let gameDates  = [];   // sorted unique local date strings "YYYY-MM-DD"
+  let allGames  = [];
+  let gameDates = [];
   let activeDate = null;
 
   async function fetchOdds() {
@@ -251,13 +303,11 @@
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
 
-  function todayStr() {
-    return localDateStr(new Date().toISOString());
-  }
+  function todayStr() { return localDateStr(new Date().toISOString()); }
 
   function formatTabLabel(dateStr) {
     const [y, m, d] = dateStr.split('-').map(Number);
-    const date = new Date(y, m - 1, d);
+    const date  = new Date(y, m - 1, d);
     const today = new Date(); today.setHours(0,0,0,0);
     const diff  = Math.round((date - today) / 86400000);
     const label = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
@@ -271,6 +321,20 @@
       hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
     });
   }
+
+  function formatTimestamp(date) {
+    return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+  }
+
+  // A game is "live" if it kicked off within the last 115 minutes
+  function isLive(iso) {
+    const now     = Date.now();
+    const kickoff = new Date(iso).getTime();
+    const elapsed = (now - kickoff) / 60000; // minutes
+    return elapsed >= 0 && elapsed < 115;
+  }
+
+  function isFuture(iso) { return new Date(iso) > new Date(); }
 
   function getProbs(game) {
     const sums = {}, counts = {}, decSums = {};
@@ -311,53 +375,97 @@
     return dollars;
   }
 
-  function isFuture(iso) {
-    return new Date(iso) > new Date();
+  function buildOutcomesHtml(game) {
+    const { norm, avgDec } = getProbs(game);
+    const dollars = assignDollars(norm);
+    const order   = [game.home_team, 'Draw', game.away_team];
+    return order.map(name => {
+      const pct      = (norm[name] * 100).toFixed(1);
+      const cls      = name === game.home_team ? 'home' : name === 'Draw' ? 'draw' : 'away';
+      const american = toAmerican(avgDec[name]);
+      return `
+        <div class="outcome">
+          <div class="outcome-left">
+            <span class="outcome-label">${name}</span>
+            <span class="american-odds">${american}</span>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar ${cls}" style="width:0%" data-pct="${pct}"></div>
+          </div>
+          <div class="outcome-stats">
+            <span class="pct">${pct}%</span>
+            <span class="dollars">$${dollars[name]}</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  async function refreshLiveCard(card, gameId) {
+    const btn = card.querySelector('.live-update-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Updating…'; }
+
+    try {
+      const games   = await fetchOdds();
+      const updated = games.find(g => g.id === gameId);
+      if (!updated) return;
+
+      // patch allGames so global state is fresh too
+      const idx = allGames.findIndex(g => g.id === gameId);
+      if (idx !== -1) allGames[idx] = updated;
+
+      const oddsBody = card.querySelector('.odds-body');
+      const ts       = card.querySelector('.odds-timestamp');
+
+      if (oddsBody) {
+        oddsBody.innerHTML = buildOutcomesHtml(updated);
+        requestAnimationFrame(() => {
+          oddsBody.querySelectorAll('.bar[data-pct]').forEach(el => {
+            el.style.width = el.dataset.pct + '%';
+          });
+        });
+      }
+
+      if (ts) ts.textContent = `Odds as of ${formatTimestamp(new Date())}`;
+
+    } catch(err) {
+      if (btn) btn.textContent = 'Error';
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = '↻ Update live odds'; }
+    }
   }
 
   function renderCard(game) {
     const hasOdds = game.bookmakers && game.bookmakers.length > 0;
     const future  = isFuture(game.commence_time);
+    const live    = isLive(game.commence_time);
 
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'card' + (live ? ' live' : '');
+
+    // badge row
+    let badgeHtml = '';
+    if (live) {
+      badgeHtml = `<div class="badge-row">
+        <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+        <button class="live-update-btn" onclick="refreshLiveCard(this.closest('.card'), '${game.id}')">↻ Update live odds</button>
+      </div>`;
+    } else if (future) {
+      badgeHtml = `<div class="badge-row"><span class="future-badge">Upcoming · ${formatKickoff(game.commence_time)}</span></div>`;
+    }
 
     let innerHtml = `
       <div class="match-header">
-        ${future ? `<div class="future-badge">Upcoming · ${formatKickoff(game.commence_time)}</div>` : ''}
+        ${badgeHtml}
         <h2>${game.home_team} vs ${game.away_team}</h2>
-        ${!future ? `<p>${formatKickoff(game.commence_time)}</p>` : ''}
+        ${!future && !live ? `<p>${formatKickoff(game.commence_time)}</p>` : ''}
+        ${live ? `<p class="odds-timestamp">Odds as of ${formatTimestamp(new Date())}</p>` : ''}
       </div>`;
 
     if (!hasOdds) {
       innerHtml += `<p class="no-odds">Odds not yet available</p>`;
     } else {
-      const { norm, avgDec } = getProbs(game);
-      const dollars = assignDollars(norm);
-      const order   = [game.home_team, 'Draw', game.away_team];
-
-      const outcomesHtml = order.map(name => {
-        const pct = (norm[name] * 100).toFixed(1);
-        const cls = name === game.home_team ? 'home' : name === 'Draw' ? 'draw' : 'away';
-        const american = toAmerican(avgDec[name]);
-        return `
-          <div class="outcome">
-            <div class="outcome-left">
-              <span class="outcome-label">${name}</span>
-              <span class="american-odds">${american}</span>
-            </div>
-            <div class="bar-wrap">
-              <div class="bar ${cls}" style="width:0%" data-pct="${pct}"></div>
-            </div>
-            <div class="outcome-stats">
-              <span class="pct">${pct}%</span>
-              <span class="dollars">$${dollars[name]}</span>
-            </div>
-          </div>`;
-      }).join('');
-
       innerHtml += `
-        <div class="outcomes">${outcomesHtml}</div>
+        <div class="outcomes odds-body">${buildOutcomesHtml(game)}</div>
         <hr class="divider" />
         <div class="total-row"><span>Total</span><span>100% &nbsp;|&nbsp; $100</span></div>`;
     }
@@ -403,25 +511,13 @@
 
     main.innerHTML += `
       <p class="footer" id="status">Last updated: ${new Date().toLocaleTimeString()}</p>
-      <button class="refresh-btn" onclick="reload()">Refresh odds</button>`;
+      <button class="refresh-btn" onclick="reload()">Refresh all odds</button>`;
 
     requestAnimationFrame(() => {
       document.querySelectorAll('.bar[data-pct]').forEach(el => {
         el.style.width = el.dataset.pct + '%';
       });
     });
-  }
-
-  async function reload() {
-    document.getElementById('main').innerHTML = '<p class="footer" id="status">Fetching latest odds...</p>';
-    try {
-      allGames = await fetchOdds();
-      buildDates();
-      selectDate(activeDate || todayStr());
-    } catch(err) {
-      document.getElementById('main').innerHTML =
-        `<p class="footer error">${err.message}</p>`;
-    }
   }
 
   function buildDates() {

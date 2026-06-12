@@ -113,11 +113,24 @@
       gap: 12px;
     }
 
+    .outcome-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      width: 140px;
+      flex-shrink: 0;
+    }
+
     .outcome-label {
       font-size: 0.88rem;
       font-weight: 500;
-      width: 120px;
-      flex-shrink: 0;
+      line-height: 1.2;
+    }
+
+    .american-odds {
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: #999;
     }
 
     .bar-wrap {
@@ -261,22 +274,31 @@
   }
 
   function getProbs(game) {
-    const sums = {}, counts = {};
+    const sums = {}, counts = {}, decSums = {};
     for (const bk of game.bookmakers) {
       for (const mkt of bk.markets) {
         if (mkt.key !== 'h2h') continue;
         for (const o of mkt.outcomes) {
-          sums[o.name]   = (sums[o.name]   || 0) + 1 / o.price;
-          counts[o.name] = (counts[o.name] || 0) + 1;
+          sums[o.name]    = (sums[o.name]    || 0) + 1 / o.price;
+          decSums[o.name] = (decSums[o.name] || 0) + o.price;
+          counts[o.name]  = (counts[o.name]  || 0) + 1;
         }
       }
     }
-    const raw = {};
-    for (const n in sums) raw[n] = sums[n] / counts[n];
+    const raw = {}, avgDec = {};
+    for (const n in sums) {
+      raw[n]    = sums[n] / counts[n];
+      avgDec[n] = decSums[n] / counts[n];
+    }
     const total = Object.values(raw).reduce((a,b) => a+b, 0);
     const norm  = {};
     for (const n in raw) norm[n] = raw[n] / total;
-    return norm;
+    return { norm, avgDec };
+  }
+
+  function toAmerican(dec) {
+    if (dec >= 2.0) return '+' + Math.round((dec - 1) * 100);
+    return String(Math.round(-100 / (dec - 1)));
   }
 
   function assignDollars(norm) {
@@ -311,16 +333,20 @@
     if (!hasOdds) {
       innerHtml += `<p class="no-odds">Odds not yet available</p>`;
     } else {
-      const norm    = getProbs(game);
+      const { norm, avgDec } = getProbs(game);
       const dollars = assignDollars(norm);
       const order   = [game.home_team, 'Draw', game.away_team];
 
       const outcomesHtml = order.map(name => {
         const pct = (norm[name] * 100).toFixed(1);
         const cls = name === game.home_team ? 'home' : name === 'Draw' ? 'draw' : 'away';
+        const american = toAmerican(avgDec[name]);
         return `
           <div class="outcome">
-            <span class="outcome-label">${name}</span>
+            <div class="outcome-left">
+              <span class="outcome-label">${name}</span>
+              <span class="american-odds">${american}</span>
+            </div>
             <div class="bar-wrap">
               <div class="bar ${cls}" style="width:0%" data-pct="${pct}"></div>
             </div>

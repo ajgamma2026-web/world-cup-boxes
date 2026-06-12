@@ -22,23 +22,16 @@
       text-align: center;
     }
 
-    header h1 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      margin-bottom: 1rem;
-    }
+    header h1 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
 
+    /* date nav */
     .date-nav {
       display: flex;
-      align-items: center;
-      gap: 0;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       padding-bottom: 2px;
     }
-
     .date-nav::-webkit-scrollbar { display: none; }
 
     .date-tab {
@@ -54,7 +47,6 @@
       white-space: nowrap;
       transition: color 0.15s, border-color 0.15s;
     }
-
     .date-tab:hover { color: #111; }
     .date-tab.active { color: #111; border-bottom-color: #111; }
 
@@ -66,6 +58,7 @@
       padding: 2rem 1.5rem 0;
     }
 
+    /* card */
     .card {
       background: #fff;
       border-radius: 16px;
@@ -73,202 +66,142 @@
       padding: 1.75rem 2rem;
       max-width: 520px;
       width: 100%;
+      overflow: hidden;
     }
+    .card.live { border-left: 3px solid #16a34a; }
 
-    /* live card gets a subtle green left border */
-    .card.live {
-      border-left: 3px solid #16a34a;
-    }
+    .match-header { text-align: center; margin-bottom: 1.25rem; }
+    .match-header h2 { font-size: 1.15rem; font-weight: 600; margin-bottom: 4px; }
+    .match-header p  { font-size: 0.82rem; color: #888; }
 
-    .match-header {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .match-header h2 {
-      font-size: 1.15rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .match-header p {
-      font-size: 0.82rem;
-      color: #888;
-    }
-
-    /* badge row above title */
     .badge-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 6px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 6px;
     }
 
     .future-badge {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: #6366f1;
-      background: #eef2ff;
-      border-radius: 6px;
-      padding: 2px 8px;
+      font-size: 0.72rem; font-weight: 600; color: #6366f1;
+      background: #eef2ff; border-radius: 6px; padding: 2px 8px;
     }
-
     .live-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: #fff;
-      background: #dc2626;
-      border-radius: 6px;
-      padding: 2px 8px;
-      letter-spacing: 0.04em;
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.72rem; font-weight: 700; color: #fff;
+      background: #dc2626; border-radius: 6px; padding: 2px 8px;
     }
-
     .live-dot {
-      width: 6px;
-      height: 6px;
-      background: #fff;
-      border-radius: 50%;
+      width: 6px; height: 6px; background: #fff; border-radius: 50%;
       animation: pulse 1.2s ease-in-out infinite;
     }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.3; }
-    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
     .live-update-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: #16a34a;
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-radius: 6px;
-      padding: 2px 10px;
-      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.72rem; font-weight: 600; color: #16a34a;
+      background: #f0fdf4; border: 1px solid #bbf7d0;
+      border-radius: 6px; padding: 2px 10px; cursor: pointer;
       transition: background 0.15s;
     }
-
     .live-update-btn:hover { background: #dcfce7; }
-    .live-update-btn:disabled { opacity: 0.5; cursor: default; }
+    .live-update-btn:disabled { opacity: .5; cursor: default; }
 
-    .odds-timestamp {
-      font-size: 0.72rem;
-      color: #aaa;
-      margin-top: 4px;
-    }
+    .odds-timestamp { font-size: 0.72rem; color: #aaa; margin-top: 4px; }
 
-    .outcomes {
+    /* card tabs */
+    .card-tabs {
       display: flex;
-      flex-direction: column;
-      gap: 13px;
-      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 1.25rem;
     }
-
-    .outcome {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .outcome-left {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      width: 140px;
-      flex-shrink: 0;
-    }
-
-    .outcome-label {
-      font-size: 0.88rem;
-      font-weight: 500;
-      line-height: 1.2;
-    }
-
-    .american-odds {
-      font-size: 0.73rem;
-      font-weight: 600;
-      color: #999;
-    }
-
-    .bar-wrap {
+    .card-tab {
       flex: 1;
-      background: #eee;
-      border-radius: 999px;
-      height: 11px;
-      overflow: hidden;
+      padding: 7px 0;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #888;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
     }
+    .card-tab:hover { color: #111; }
+    .card-tab.active { color: #111; border-bottom-color: #111; }
 
-    .bar {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.8s ease;
+    /* odds panel */
+    .outcomes {
+      display: flex; flex-direction: column;
+      gap: 13px; margin-bottom: 1.5rem;
     }
-
+    .outcome { display: flex; align-items: center; gap: 12px; }
+    .outcome-left {
+      display: flex; flex-direction: column; gap: 1px;
+      width: 140px; flex-shrink: 0;
+    }
+    .outcome-label { font-size: 0.88rem; font-weight: 500; line-height: 1.2; }
+    .american-odds { font-size: 0.73rem; font-weight: 600; color: #999; }
+    .bar-wrap {
+      flex: 1; background: #eee; border-radius: 999px;
+      height: 11px; overflow: hidden;
+    }
+    .bar { height: 100%; border-radius: 999px; transition: width 0.8s ease; }
     .bar.home { background: #16a34a; }
     .bar.draw { background: #d97706; }
     .bar.away { background: #dc2626; }
-
     .outcome-stats {
-      display: flex;
-      gap: 10px;
-      font-size: 0.83rem;
-      min-width: 95px;
-      justify-content: flex-end;
+      display: flex; gap: 10px; font-size: 0.83rem;
+      min-width: 95px; justify-content: flex-end;
     }
-
     .pct     { color: #777; }
     .dollars { font-weight: 600; }
 
-    .divider {
-      border: none;
-      border-top: 1px solid #eee;
-      margin-bottom: 1rem;
-    }
-
+    .divider { border: none; border-top: 1px solid #eee; margin-bottom: 1rem; }
     .total-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.82rem;
+      display: flex; justify-content: space-between;
+      font-size: 0.82rem; font-weight: 600; color: #666;
+    }
+
+    /* history panel */
+    .history-panel { display: none; }
+    .history-panel.visible { display: block; }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+    .history-table th {
+      text-align: left;
       font-weight: 600;
-      color: #666;
+      color: #888;
+      padding: 0 8px 8px 0;
+      border-bottom: 1px solid #eee;
     }
+    .history-table th:not(:first-child),
+    .history-table td:not(:first-child) { text-align: right; }
 
-    .no-odds {
-      font-size: 0.82rem;
-      color: #aaa;
-      text-align: center;
-      padding: 0.5rem 0 0.25rem;
+    .history-table td {
+      padding: 7px 8px 7px 0;
+      border-bottom: 1px solid #f5f5f5;
+      color: #333;
+      vertical-align: middle;
     }
+    .history-table tr:last-child td { border-bottom: none; }
 
-    .footer {
-      text-align: center;
-      font-size: 0.82rem;
-      color: #aaa;
-      margin-top: 1.5rem;
-    }
+    .history-loading { font-size: 0.82rem; color: #aaa; text-align: center; padding: 1rem 0; }
 
-    .error { color: #dc2626; }
+    /* sparkline wrapper inside history row */
+    .spark { display: inline-block; width: 48px; height: 18px; vertical-align: middle; }
 
+    /* misc */
+    .no-odds { font-size: 0.82rem; color: #aaa; text-align: center; padding: .5rem 0 .25rem; }
+    .footer   { text-align: center; font-size: 0.82rem; color: #aaa; margin-top: 1.5rem; }
+    .error    { color: #dc2626; }
     .refresh-btn {
-      display: block;
-      margin: 1rem auto 0;
-      padding: 7px 18px;
-      font-size: 0.82rem;
-      background: #111;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      display: block; margin: 1rem auto 0;
+      padding: 7px 18px; font-size: 0.82rem;
+      background: #111; color: #fff;
+      border: none; border-radius: 8px; cursor: pointer;
     }
-
     .refresh-btn:hover { background: #333; }
   </style>
 </head>
@@ -284,104 +217,118 @@
 </main>
 
 <script>
-  const API_KEY = "9d2f7dbad04e89a62bf9fa5973d0a991";
-  const SPORT   = "soccer_fifa_world_cup";
+  // ── config ────────────────────────────────────────────────────────────────
+  const API_BASE = "http://localhost:8000";  // change to your deployed server URL
 
-  let allGames  = [];
-  let gameDates = [];
+  // ── state ─────────────────────────────────────────────────────────────────
+  let allGames   = [];
+  let gameDates  = [];
   let activeDate = null;
+  const gameRegistry = {};   // gameId → game object, for onclick handlers
 
-  async function fetchOdds() {
-    const url = `https://api.the-odds-api.com/v4/sports/${SPORT}/odds?apiKey=${API_KEY}&regions=us&markets=h2h&oddsFormat=decimal`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`API error ${res.status}`);
+  // ── api ───────────────────────────────────────────────────────────────────
+  async function fetchLatest() {
+    const res = await fetch(`${API_BASE}/api/odds`);
+    if (!res.ok) throw new Error(`Server error ${res.status}`);
     return res.json();
   }
 
-  function localDateStr(iso) {
-    const d = new Date(iso);
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  async function fetchHistory(gameId) {
+    const res = await fetch(`${API_BASE}/api/odds/${gameId}/history`);
+    if (!res.ok) throw new Error(`No history`);
+    return res.json();
   }
 
+  async function triggerRefresh() {
+    const res = await fetch(`${API_BASE}/api/refresh`, { method: "POST" });
+    if (!res.ok) throw new Error(`Refresh failed`);
+    return res.json();
+  }
+
+  // ── helpers ───────────────────────────────────────────────────────────────
+  function localDateStr(iso) {
+    const d = new Date(iso);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  }
   function todayStr() { return localDateStr(new Date().toISOString()); }
 
   function formatTabLabel(dateStr) {
-    const [y, m, d] = dateStr.split('-').map(Number);
-    const date  = new Date(y, m - 1, d);
+    const [y,m,d] = dateStr.split("-").map(Number);
+    const date  = new Date(y, m-1, d);
     const today = new Date(); today.setHours(0,0,0,0);
-    const diff  = Math.round((date - today) / 86400000);
-    const label = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-    if (diff === 0) return `Today · ${label}`;
-    if (diff === 1) return `Tomorrow · ${label}`;
+    const diff  = Math.round((date-today)/86400000);
+    const label = date.toLocaleDateString(undefined,{month:"short",day:"numeric"});
+    if (diff===0) return `Today · ${label}`;
+    if (diff===1) return `Tomorrow · ${label}`;
     return label;
   }
 
   function formatKickoff(iso) {
-    return new Date(iso).toLocaleString(undefined, {
-      hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
-    });
+    return new Date(iso).toLocaleString(undefined,{hour:"numeric",minute:"2-digit",timeZoneName:"short"});
   }
 
-  function formatTimestamp(date) {
-    return date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+  function formatTimestamp(iso) {
+    return new Date(iso).toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit",second:"2-digit"});
   }
 
-  // A game is "live" if it kicked off within the last 115 minutes
+  function formatHistoryTime(iso) {
+    return new Date(iso).toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+  }
+
   function isLive(iso) {
-    const now     = Date.now();
-    const kickoff = new Date(iso).getTime();
-    const elapsed = (now - kickoff) / 60000; // minutes
+    const elapsed = (Date.now() - new Date(iso).getTime()) / 60000;
     return elapsed >= 0 && elapsed < 115;
   }
-
   function isFuture(iso) { return new Date(iso) > new Date(); }
 
-  function getProbs(game) {
-    const sums = {}, counts = {}, decSums = {};
-    for (const bk of game.bookmakers) {
-      for (const mkt of bk.markets) {
-        if (mkt.key !== 'h2h') continue;
+  // ── odds math ─────────────────────────────────────────────────────────────
+  function getProbs(bookmakers) {
+    const sums={}, counts={}, decSums={};
+    for (const bk of bookmakers) {
+      for (const mkt of bk.markets||[]) {
+        if (mkt.key !== "h2h") continue;
         for (const o of mkt.outcomes) {
-          sums[o.name]    = (sums[o.name]    || 0) + 1 / o.price;
+          sums[o.name]    = (sums[o.name]    || 0) + 1/o.price;
           decSums[o.name] = (decSums[o.name] || 0) + o.price;
           counts[o.name]  = (counts[o.name]  || 0) + 1;
         }
       }
     }
-    const raw = {}, avgDec = {};
+    const raw={}, avgDec={};
     for (const n in sums) {
-      raw[n]    = sums[n] / counts[n];
-      avgDec[n] = decSums[n] / counts[n];
+      raw[n]    = sums[n]/counts[n];
+      avgDec[n] = decSums[n]/counts[n];
     }
-    const total = Object.values(raw).reduce((a,b) => a+b, 0);
-    const norm  = {};
-    for (const n in raw) norm[n] = raw[n] / total;
+    const total = Object.values(raw).reduce((a,b)=>a+b,0);
+    const norm={};
+    for (const n in raw) norm[n] = raw[n]/total;
     return { norm, avgDec };
   }
 
   function toAmerican(dec) {
-    if (dec >= 2.0) return '+' + Math.round((dec - 1) * 100);
-    return String(Math.round(-100 / (dec - 1)));
+    if (dec >= 2.0) return "+" + Math.round((dec-1)*100);
+    return String(Math.round(-100/(dec-1)));
   }
 
   function assignDollars(norm) {
-    const dollars = {};
-    for (const n in norm) dollars[n] = Math.round(norm[n] * 100);
-    const diff = 100 - Object.values(dollars).reduce((a,b) => a+b, 0);
+    const dollars={};
+    for (const n in norm) dollars[n] = Math.round(norm[n]*100);
+    const diff = 100 - Object.values(dollars).reduce((a,b)=>a+b,0);
     if (diff !== 0) {
-      const largest = Object.keys(norm).reduce((a,b) => norm[a] > norm[b] ? a : b);
+      const largest = Object.keys(norm).reduce((a,b)=>norm[a]>norm[b]?a:b);
       dollars[largest] += diff;
     }
     return dollars;
   }
 
+  // ── odds html ─────────────────────────────────────────────────────────────
   function buildOutcomesHtml(game) {
-    const { norm, avgDec } = getProbs(game);
+    const { norm, avgDec } = getProbs(game.bookmakers);
     const dollars = assignDollars(norm);
-    const order   = [game.home_team, 'Draw', game.away_team];
+    const order   = [game.home_team, "Draw", game.away_team];
     return order.map(name => {
-      const pct      = (norm[name] * 100).toFixed(1);
-      const cls      = name === game.home_team ? 'home' : name === 'Draw' ? 'draw' : 'away';
+      const pct      = (norm[name]*100).toFixed(1);
+      const cls      = name===game.home_team?"home":name==="Draw"?"draw":"away";
       const american = toAmerican(avgDec[name]);
       return `
         <div class="outcome">
@@ -397,127 +344,196 @@
             <span class="dollars">$${dollars[name]}</span>
           </div>
         </div>`;
-    }).join('');
+    }).join("");
   }
 
-  async function refreshLiveCard(card, gameId) {
-    const btn = card.querySelector('.live-update-btn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Updating…'; }
-
-    try {
-      const games   = await fetchOdds();
-      const updated = games.find(g => g.id === gameId);
-      if (!updated) return;
-
-      // patch allGames so global state is fresh too
-      const idx = allGames.findIndex(g => g.id === gameId);
-      if (idx !== -1) allGames[idx] = updated;
-
-      const oddsBody = card.querySelector('.odds-body');
-      const ts       = card.querySelector('.odds-timestamp');
-
-      if (oddsBody) {
-        oddsBody.innerHTML = buildOutcomesHtml(updated);
-        requestAnimationFrame(() => {
-          oddsBody.querySelectorAll('.bar[data-pct]').forEach(el => {
-            el.style.width = el.dataset.pct + '%';
-          });
-        });
-      }
-
-      if (ts) ts.textContent = `Odds as of ${formatTimestamp(new Date())}`;
-
-    } catch(err) {
-      if (btn) btn.textContent = 'Error';
-    } finally {
-      if (btn) { btn.disabled = false; btn.innerHTML = '↻ Update live odds'; }
-    }
+  function animateBars(container) {
+    requestAnimationFrame(() => {
+      container.querySelectorAll(".bar[data-pct]").forEach(el => {
+        el.style.width = el.dataset.pct + "%";
+      });
+    });
   }
 
+  // ── history html ──────────────────────────────────────────────────────────
+  function buildHistoryHtml(rows, homeTeam, awayTeam) {
+    if (!rows.length) return `<p class="history-loading">No history yet.</p>`;
+
+    // build rows newest-first
+    const sorted = [...rows].reverse();
+    const trs = sorted.map(row => {
+      const { norm, avgDec } = getProbs(row.bookmakers);
+      const hPct  = (norm[homeTeam]*100).toFixed(1);
+      const dPct  = (norm["Draw"]*100).toFixed(1);
+      const aPct  = (norm[awayTeam]*100).toFixed(1);
+      const hAm   = toAmerican(avgDec[homeTeam]);
+      const dAm   = toAmerican(avgDec["Draw"]);
+      const aAm   = toAmerican(avgDec[awayTeam]);
+      return `<tr>
+        <td>${formatHistoryTime(row.fetched_at)}</td>
+        <td>${hAm}<br><span style="color:#aaa;font-size:0.7rem">${hPct}%</span></td>
+        <td>${dAm}<br><span style="color:#aaa;font-size:0.7rem">${dPct}%</span></td>
+        <td>${aAm}<br><span style="color:#aaa;font-size:0.7rem">${aPct}%</span></td>
+      </tr>`;
+    }).join("");
+
+    const shortHome = homeTeam.split(" ").pop();
+    const shortAway = awayTeam.split(" ").pop();
+
+    return `
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>${shortHome}</th>
+            <th>Draw</th>
+            <th>${shortAway}</th>
+          </tr>
+        </thead>
+        <tbody>${trs}</tbody>
+      </table>`;
+  }
+
+  // ── global tab + history handlers (called from inline onclick) ───────────
+  window.switchTab = function(btn, panel, gameId) {
+    const card = btn.closest(".card");
+    card.querySelectorAll(".card-tab").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    card.querySelector(".odds-panel").style.display    = panel === "odds"    ? "block" : "none";
+    card.querySelector(".history-panel").style.display = panel === "history" ? "block" : "none";
+    if (panel === "history") loadHistory(card, gameRegistry[gameId]);
+  };
+
+  // ── card ──────────────────────────────────────────────────────────────────
   function renderCard(game) {
+    gameRegistry[game.id] = game;
     const hasOdds = game.bookmakers && game.bookmakers.length > 0;
     const future  = isFuture(game.commence_time);
     const live    = isLive(game.commence_time);
 
-    const card = document.createElement('div');
-    card.className = 'card' + (live ? ' live' : '');
+    const card = document.createElement("div");
+    card.className = "card" + (live ? " live" : "");
 
-    // badge row
-    let badgeHtml = '';
+    let badgeHtml = "";
     if (live) {
       badgeHtml = `<div class="badge-row">
         <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-        <button class="live-update-btn" onclick="refreshLiveCard(this.closest('.card'), '${game.id}')">↻ Update live odds</button>
+        <button class="live-update-btn" onclick="refreshLiveCard(this.closest('.card'),'${game.id}')">↻ Update live odds</button>
       </div>`;
     } else if (future) {
-      badgeHtml = `<div class="badge-row"><span class="future-badge">Upcoming · ${formatKickoff(game.commence_time)}</span></div>`;
+      badgeHtml = `<div class="badge-row">
+        <span class="future-badge">Upcoming · ${formatKickoff(game.commence_time)}</span>
+      </div>`;
     }
 
-    let innerHtml = `
+    const tsLine = live
+      ? `<p class="odds-timestamp">Odds as of ${formatTimestamp(game.fetched_at)}</p>`
+      : (!future ? `<p>${formatKickoff(game.commence_time)}</p>` : "");
+
+    card.innerHTML = `
       <div class="match-header">
         ${badgeHtml}
         <h2>${game.home_team} vs ${game.away_team}</h2>
-        ${!future && !live ? `<p>${formatKickoff(game.commence_time)}</p>` : ''}
-        ${live ? `<p class="odds-timestamp">Odds as of ${formatTimestamp(new Date())}</p>` : ''}
+        ${tsLine}
+      </div>
+      <div class="card-tabs">
+        <button class="card-tab active" onclick="switchTab(this,'odds','${game.id}')">Current odds</button>
+        <button class="card-tab" onclick="switchTab(this,'history','${game.id}')">History</button>
+      </div>
+      <div class="odds-panel">
+        ${hasOdds
+          ? `<div class="outcomes odds-body">${buildOutcomesHtml(game)}</div>
+             <hr class="divider"/>
+             <div class="total-row"><span>Total</span><span>100% &nbsp;|&nbsp; $100</span></div>`
+          : `<p class="no-odds">Odds not yet available</p>`}
+      </div>
+      <div class="history-panel">
+        <p class="history-loading">Loading history...</p>
       </div>`;
 
-    if (!hasOdds) {
-      innerHtml += `<p class="no-odds">Odds not yet available</p>`;
-    } else {
-      innerHtml += `
-        <div class="outcomes odds-body">${buildOutcomesHtml(game)}</div>
-        <hr class="divider" />
-        <div class="total-row"><span>Total</span><span>100% &nbsp;|&nbsp; $100</span></div>`;
-    }
+    // nothing — tabs and live button use global onclick handlers below
 
-    card.innerHTML = innerHtml;
     return card;
   }
 
+  // ── live refresh ──────────────────────────────────────────────────────────
+  async function refreshLiveCard(card, gameId) {
+    const btn = card.querySelector(".live-update-btn");
+    if (btn) { btn.disabled=true; btn.textContent="Updating…"; }
+    try {
+      await triggerRefresh();
+      const games   = await fetchLatest();
+      const updated = games.find(g => g.id === gameId);
+      if (!updated) return;
+      const idx = allGames.findIndex(g => g.id === gameId);
+      if (idx !== -1) allGames[idx] = updated;
+
+      const oddsBody = card.querySelector(".odds-body");
+      if (oddsBody) {
+        oddsBody.innerHTML = buildOutcomesHtml(updated);
+        animateBars(oddsBody);
+      }
+      const ts = card.querySelector(".odds-timestamp");
+      if (ts) ts.textContent = `Odds as of ${formatTimestamp(updated.fetched_at)}`;
+
+      // invalidate cached history so it reloads
+      card.querySelector(".history-panel").innerHTML = `<p class="history-loading">Loading history...</p>`;
+      delete card._historyLoaded;
+    } catch(err) {
+      if (btn) btn.textContent = "Error — try again";
+    } finally {
+      if (btn) { btn.disabled=false; btn.innerHTML="↻ Update live odds"; }
+    }
+  }
+
+  // ── history loader ────────────────────────────────────────────────────────
+  async function loadHistory(card, game) {
+    if (card._historyLoaded) return;
+    card._historyLoaded = true;
+    const panel = card.querySelector(".history-panel");
+    try {
+      const rows = await fetchHistory(game.id);
+      panel.innerHTML = buildHistoryHtml(rows, game.home_team, game.away_team);
+    } catch(err) {
+      panel.innerHTML = `<p class="history-loading">No history available yet.</p>`;
+    }
+  }
+
+  // ── date nav ──────────────────────────────────────────────────────────────
   function renderDateNav() {
-    const nav = document.getElementById('date-nav');
-    nav.innerHTML = '';
+    const nav = document.getElementById("date-nav");
+    nav.innerHTML = "";
     let activeBtn = null;
     gameDates.forEach(d => {
-      const btn = document.createElement('button');
-      btn.className = 'date-tab' + (d === activeDate ? ' active' : '');
+      const btn = document.createElement("button");
+      btn.className = "date-tab" + (d===activeDate ? " active" : "");
       btn.textContent = formatTabLabel(d);
       btn.onclick = () => selectDate(d);
       nav.appendChild(btn);
       if (d === activeDate) activeBtn = btn;
     });
-    if (activeBtn) {
-      requestAnimationFrame(() => {
-        activeBtn.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'instant' });
-      });
-    }
+    if (activeBtn) requestAnimationFrame(() =>
+      activeBtn.scrollIntoView({inline:"nearest",block:"nearest",behavior:"instant"}));
   }
 
   function selectDate(dateStr) {
     activeDate = dateStr;
     renderDateNav();
-
-    const main = document.getElementById('main');
-    main.innerHTML = '';
-
+    const main = document.getElementById("main");
+    main.innerHTML = "";
     const games = allGames.filter(g => localDateStr(g.commence_time) === dateStr);
-
-    if (games.length === 0) {
-      main.innerHTML = '<p class="footer">No matches on this date.</p>';
+    if (!games.length) {
+      main.innerHTML = `<p class="footer">No matches on this date.</p>`;
       return;
     }
-
-    games.forEach(g => main.appendChild(renderCard(g)));
-
+    games.forEach(g => {
+      const card = renderCard(g);
+      main.appendChild(card);
+      animateBars(card);
+    });
     main.innerHTML += `
       <p class="footer" id="status">Last updated: ${new Date().toLocaleTimeString()}</p>
       <button class="refresh-btn" onclick="reload()">Refresh all odds</button>`;
-
-    requestAnimationFrame(() => {
-      document.querySelectorAll('.bar[data-pct]').forEach(el => {
-        el.style.width = el.dataset.pct + '%';
-      });
-    });
   }
 
   function buildDates() {
@@ -527,20 +543,20 @@
 
   async function init() {
     try {
-      allGames = await fetchOdds();
+      allGames = await fetchLatest();
       buildDates();
       const today = todayStr();
       activeDate = gameDates.includes(today) ? today : gameDates[0];
       renderDateNav();
       selectDate(activeDate);
     } catch(err) {
-      document.getElementById('main').innerHTML =
-        `<p class="footer error">${err.message}</p>`;
+      document.getElementById("main").innerHTML =
+        `<p class="footer error">Could not reach server: ${err.message}</p>`;
     }
   }
 
   function reload() {
-    document.getElementById('main').innerHTML = '<p class="footer">Fetching latest odds...</p>';
+    document.getElementById("main").innerHTML = `<p class="footer">Fetching latest odds...</p>`;
     init();
   }
 

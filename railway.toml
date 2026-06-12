@@ -2,4 +2,4 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "cd server && pip install -r requirements.txt && uvicorn main:app --host 0.0.0.0 --port $PORT"
+startCommand = "cd server && pip3 install -r requirements.txt && python3 -m uvicorn main:app --host 0.0.0.0 --port $PORT"

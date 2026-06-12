@@ -34,7 +34,6 @@
     .date-nav {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 0;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -370,13 +369,20 @@
   function renderDateNav() {
     const nav = document.getElementById('date-nav');
     nav.innerHTML = '';
+    let activeBtn = null;
     gameDates.forEach(d => {
       const btn = document.createElement('button');
       btn.className = 'date-tab' + (d === activeDate ? ' active' : '');
       btn.textContent = formatTabLabel(d);
       btn.onclick = () => selectDate(d);
       nav.appendChild(btn);
+      if (d === activeDate) activeBtn = btn;
     });
+    if (activeBtn) {
+      requestAnimationFrame(() => {
+        activeBtn.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'instant' });
+      });
+    }
   }
 
   function selectDate(dateStr) {
